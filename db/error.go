@@ -1,4 +1,4 @@
-package server
+package db
 
 // Error represents an error condition within the database.
 type Error struct {

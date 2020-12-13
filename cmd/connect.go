@@ -65,6 +65,10 @@ func checkCredentials(u user) bool {
 
 func getUserPassFromFile (filename string) user {
     cryption.DecryptFromFile(filename,"a")
+    return user{
+		username: "",
+		password: "",
+	}
 }
 
 func init() {

@@ -1,11 +1,12 @@
-package server
+package db
 
 import (
 	bolt "go.etcd.io/bbolt"
-	"os"
+	"time"
 )
 
-const dbPath = "/opt/vault/passvault.db"
+const path = "/opt/vault/passvault.db"
+
 // DB represents a Bolt-backed data store.
 type DB struct {
 	*bolt.DB
@@ -17,17 +18,17 @@ type Tx struct {
 }
 
 // Open initializes and opens the database.
-func (db *DB) Open(path string, mode os.FileMode) error {
+func (db *DB) Open() error {
 	var err error
 
-	db.DB, err = bolt.Open(path, mode, nil)
+	db.DB, err = bolt.Open(path, 0600, &bolt.Options{Timeout: 2 * time.Second})
 	if err != nil {
 		return err
 	}
 
 	// Create buckets.
 	err = db.Update(func(tx *Tx) error {
-		if _, err := tx.CreateBucketIfNotExists([]byte("User")); err != nil {
+		if _, err := tx.CreateBucketIfNotExists([]byte("vault")); err != nil {
 			return &Error{"pages bucket error", err}
 		}
 
@@ -55,4 +56,14 @@ func (db *DB) Update(fn func(*Tx) error) error {
 	return db.DB.Update(func(tx *bolt.Tx) error {
 		return fn(&Tx{tx})
 	})
+}
+
+// Vault retrieves a Vault from the database with the given name.
+func (tx *Tx) Vault(name []byte) (*Vault, error) {
+	v := &Vault{
+		Tx:   tx,
+		Name: name,
+	}
+
+	return v, v.Load()
 }
