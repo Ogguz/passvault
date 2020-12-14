@@ -15,9 +15,14 @@ limitations under the License.
 */
 package main
 
-import "github.com/Ogguz/passvault/cmd"
+import (
+	"github.com/Ogguz/passvault/cmd"
+)
 
 func main() {
 	cmd.Execute()
 }
+
+
+// TODO login -> init + check + multi-user + multi-session therefore multi-bucket
 

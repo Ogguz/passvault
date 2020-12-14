@@ -24,16 +24,15 @@ import (
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-to quickly create a Cobra application.`,
+	Short: "Initializing the db before first usage.",
+	Long: `Setups the db and create necessary buckets. Usage:
+oassvault init --username <username> --password <password>
+After init, you will only allowed to access with this username and password`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init called")
-		username, _ := cmd.Flags().GetString("username")
-		password, _ := cmd.Flags().GetString("password")
-		server.InitUser(username,password)
-		server.GetUser()
+        initDB()
+		// TODO Create first user
 	},
 }
 
@@ -43,4 +42,11 @@ func init() {
 	initCmd.Flags().StringP("password", "p", "", "Set your password")
 }
 
-// TODO mkdir opt/vault file if there is none
+func initDB() (*db.DB, error) {
+	db := &db.DB{}
+	if err := db.Open(); err != nil {
+		return nil, err
+	}
+    return db, nil
+}
+
