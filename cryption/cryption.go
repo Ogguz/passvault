@@ -7,9 +7,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"io"
-	"io/ioutil"
 	"log"
-	"os"
 )
 
 // createHash take a passphrase or any string, hash it, then return the hash as a hexadecimal value.
@@ -19,7 +17,7 @@ func createHash(key string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func encrypt(data []byte, passphrase string) []byte  {
+func Encrypt(data []byte, passphrase string) []byte  {
 	block, _ := aes.NewCipher([]byte(createHash(passphrase)))
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
@@ -37,7 +35,7 @@ func encrypt(data []byte, passphrase string) []byte  {
 
 }
 
-func decrypt(data []byte, passphrase string) []byte {
+func Decrypt(data []byte, passphrase string) []byte {
 	key := []byte(createHash(passphrase))
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -54,21 +52,4 @@ func decrypt(data []byte, passphrase string) []byte {
 		panic(err.Error())
 	}
 	return plaintext
-}
-
-func EncryptToFile(filename string, data []byte, passphrase string) {
-	f, err := os.Create(filename)
-	if err != nil {
-		log.Fatalf("File create fail for encryption, %s", err)
-	}
-	defer f.Close()
-	f.Write(encrypt(data,passphrase))
-}
-
-func DecryptFromFile(filename string, passphrase string) []byte {
-	data, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatal("Reading file ")
-	}
-	return decrypt(data,passphrase)
 }
