@@ -30,9 +30,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "passvault",
 	Short: "A simple password manager runs your on local machine",
-	Long: `It is a cli runs with no dependency no additional db but its embedded bolt one.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
+	Long: `Password manager runs on pc, stores username and password with its name on its local embedded db`,
 	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 

@@ -12,11 +12,6 @@ type DB struct {
 	*bolt.DB
 }
 
-// Tx represents a BoltDB transaction
-type Tx struct {
-	*bolt.Tx
-}
-
 // Open initializes and opens the database.
 func (db *DB) Open() error {
 	var err error
@@ -56,14 +51,4 @@ func (db *DB) Update(fn func(*Tx) error) error {
 	return db.DB.Update(func(tx *bolt.Tx) error {
 		return fn(&Tx{tx})
 	})
-}
-
-// Vault retrieves a Vault from the database with the given name.
-func (tx *Tx) Vault(name []byte) (*Vault, error) {
-	v := &Vault{
-		Tx:   tx,
-		Name: name,
-	}
-
-	return v, v.Load()
 }

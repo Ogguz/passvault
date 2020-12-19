@@ -26,7 +26,7 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initializing the db before first usage.",
 	Long: `Setups the db and create necessary buckets. Usage:
-oassvault init --username <username> --password <password>
+passvault init --username <username> --password <password>
 After init, you will only allowed to access with this username and password`,
 
 	Run: func(cmd *cobra.Command, args []string) {
