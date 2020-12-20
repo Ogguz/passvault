@@ -31,7 +31,7 @@ var addVaultCmd = &cobra.Command{
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("addVault called")
-		save("a","a","d")
+		saveVault("abc","dvdfbd")
 	},
 }
 
@@ -49,7 +49,7 @@ func init() {
 	// addVaultCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func save(name,username,password string) {
+func saveVault(name,credentials string) {
 	dbBolt, err := newDB()
 	if err != nil {
 		log.Fatal(err)
@@ -59,10 +59,9 @@ func save(name,username,password string) {
 	dbBolt.Update(func(tx *db.Tx) error {
 
 		v := db.Vault{
-			Tx:       tx,
-			Name:     []byte(name),
-			Username: []byte(username),
-			Password: []byte(password),
+			Tx:          tx,
+			Name:        []byte(name),
+			Credentials: []byte(credentials),
 		}
 
 		return v.Save()

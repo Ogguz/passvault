@@ -1,5 +1,7 @@
 package db
 
+import "fmt"
+
 // Errors
 var (
 	ErrVaultNotFound = &Error{"vault not found", nil}
@@ -9,9 +11,8 @@ var (
 // Vault represents a username-pass pair
 type Vault struct {
 	Tx   *Tx
-	Name     []byte
-	Username []byte
-	Password []byte
+	Name []byte
+	Credentials []byte
 }
 
 func (v *Vault) bucket() []byte {
@@ -29,17 +30,19 @@ func (v *Vault) get() ([]byte, error) {
 
 // Load retrieves a vault from the database.
 func (v *Vault) Load() error {
-	username, err := v.get()
+	name, err := v.get()
 	if err != nil {
 		return err
 	}
-	password, err := v.get()
+	fmt.Printf("name: %s\n", name)
+	credentials, err := v.get()
+	fmt.Printf("credentials %s", credentials)
 	if err != nil {
 		return err
 	}
 
-	v.Username = username
-	v.Password = password
+	v.Credentials = credentials
+	v.Name = name
 
 	return nil
 }
@@ -50,5 +53,5 @@ func (v *Vault) Save() error {
 		return ErrNoVaultName
 	}
 
-	return v.Tx.Bucket(v.bucket()).Put(v.Username, v.Password)
+	return v.Tx.Bucket(v.bucket()).Put(v.Name, v.Credentials)
 }
